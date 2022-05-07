@@ -3,19 +3,23 @@ import processing.core.PApplet;
 public class Sketch extends PApplet {
 	
   float[] circleY= new float [30];
+  float[] circleX= new float [30];
+  boolean[] boolSnowVisible = new boolean [30];
+
   int circleSpeed = 2;
 
   boolean boolCircleSlow = false;
   boolean boolCircleFast = false;
 
-  int playerCircleX = 300;
-  int playerCircleY = 300;
+  float floatPlayerCircleX = 300;
+  float floatPlayerCircleY = 300;
 
   boolean playerCircleLeft = false;
   boolean playerCircleRight = false;
   boolean playerCircleUp = false;
   boolean playerCircleDown = false;
 
+  int intLives = 3;
 
 
   /**
@@ -34,8 +38,11 @@ public class Sketch extends PApplet {
     background(50);
     for (int i = 0; i < circleY.length; i++){
       circleY[i] = random(height);
+      circleX[i] = random(width);
+      boolSnowVisible[i] = true;
+    }
   }
-}
+    
 
   /**
    * Called repeatedly, anything drawn to the screen goes here
@@ -43,32 +50,54 @@ public class Sketch extends PApplet {
   public void draw() {
     background(50);
 
-    ellipse(playerCircleX, playerCircleY, 20, 20);
+    // Draws player ball and controls player movement
+    ellipse(floatPlayerCircleX, floatPlayerCircleY, 20, 20);
     if (playerCircleRight){
-      playerCircleX += 5;
+      floatPlayerCircleX += 5;
     }
     if (playerCircleLeft){
-      playerCircleX -= 5;
+      floatPlayerCircleX -= 5;
     }
     if (playerCircleUp){
-      playerCircleY -= 5;
+      floatPlayerCircleY -= 5;
     }
     if (playerCircleDown){
-      playerCircleY += 5  ;
+      floatPlayerCircleY += 5  ;
     }
 
+    // Draws Snowballs
     for (int i = 0; i < circleY.length; i++){
-      float circleX = width * i / circleY.length;
-      ellipse(circleX, circleY[i], 25, 25);
-
+      if (boolSnowVisible[i] == true){
+        ellipse(circleX[i], circleY[i], 25, 25);
+      }
+      
       circleY[i] += circleSpeed;
 
       if (circleY[i] > height) {
         circleY[i] = 0;
       }
+
+      // Collission detection between player circle and snowballs
+      if (dist(floatPlayerCircleX, floatPlayerCircleY, circleX[i], circleY[i]) <= (12.5 + 10) && boolSnowVisible[i] == true){
+        intLives--;
+        boolSnowVisible[i] = false;
+      }
+
+      // Makes snowballs dissapear if clicked upon
+      if (mousePressed){
+        if (dist(mouseX, mouseY, circleX[i], circleY[i]) <= 12.5){
+          boolSnowVisible[i] = false;
+        }
+      }
+    }
+    // Draws rectangles representing lives
+    for (int i = 0; i < intLives; i++){
+      rect(350 + i *15, 350 , 10, 10);
     }
     
+
   }
+  
   public void keyPressed(){
     if (keyCode == UP){
       circleSpeed = 1;
