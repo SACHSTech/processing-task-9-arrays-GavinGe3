@@ -93,10 +93,7 @@ public class Sketch extends PApplet {
         }
         if (dist(floatPlayerCircleX, floatPlayerCircleY, circleX[i], circleY[i]) >= (25 + 10)){
           boolSnowActive[i] = true;
-        }
-
-        // Makes snowballs dissapear if clicked upon
-        
+        }        
       }
         
       // Draws rectangles representing lives
@@ -108,6 +105,7 @@ public class Sketch extends PApplet {
       }
     
     }
+    // if not alive, turn the screen white
     else{
       background(255, 255, 255);
     }
